@@ -1,21 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:construmatapp/models/item.dart';
-import 'package:construmatapp/receiver/models/items.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../admin/models/product_type.dart';
 
-class ManageItemsList extends StatelessWidget {
+class ManageItemsList extends StatefulWidget {
   final User user;
 
   const ManageItemsList({super.key, required this.user});
 
   @override
+  State<ManageItemsList> createState() => _ManageItemsListState();
+}
+
+class _ManageItemsListState extends State<ManageItemsList> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Item>>(
-        future: fetchUserItems(user.uid),
+        future: fetchUserItems(widget.user.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -29,6 +34,16 @@ class ManageItemsList extends StatelessWidget {
                   Item item = userItems[index];
                   return Dismissible(
                     key: ValueKey<Item>(item),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 8.0),
+                      color: Colors.red,
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
+                    ),
                     onDismissed: (direction) {
                       removeItem(context, item);
                     },
@@ -44,19 +59,7 @@ class ManageItemsList extends StatelessWidget {
 
   void removeItem(BuildContext context, Item item) async {
     try {
-      String itemId = item.id;
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      DocumentReference<Map<String, dynamic>> itemRef = firestore.collection('items').doc(itemId);
-
-
-
-      print('ID do Item a ser removido: $itemId');
-
-      await itemRef.delete();
-
-
-
-      Provider.of<Items>(context, listen: false).remove(item);
+      firestore.collection('items').doc(item.id).delete();
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Item removido com sucesso!')),
@@ -72,8 +75,7 @@ class ManageItemsList extends StatelessWidget {
 
   Future<List<Item>> fetchUserItems(String userId) async {
     try {
-      FirebaseFirestore firestone = FirebaseFirestore.instance;
-      QuerySnapshot querySnapshot = await firestone
+      QuerySnapshot querySnapshot = await firestore
           .collection('items')
           .where('createdBy', isEqualTo: userId)
           .get();

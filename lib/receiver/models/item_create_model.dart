@@ -124,8 +124,8 @@ class ItemCreationModel {
                         ? arquivo.path
                         : 'assets/images/massa_emboço.jpg';
 
-                    Item newItem = Item(
-                      id: const Uuid().v4(),
+                    Item item = Item(
+                      id: const Uuid().v1(),
                       nome: nomeInput.text,
                       type: dropdownValue,
                       imagePath: imagePath,
@@ -133,9 +133,7 @@ class ItemCreationModel {
                       createdBy: currentUser.uid,
                     );
 
-
-
-                    await firestore.collection('items').doc(newItem.id).set(newItem.toMap());
+                    firestore.collection('items').doc(item.id).set(item.toMap());
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
