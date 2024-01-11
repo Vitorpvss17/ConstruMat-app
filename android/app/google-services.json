@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "712084066958",
+    "project_id": "construmatapp-cma",
+    "storage_bucket": "construmatapp-cma.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712084066958:android:dce05f868ac65332c16fdf",
+        "android_client_info": {
+          "package_name": "com.example.construmatapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0R1509yOeq9RpddQfiYEJcKhpjINYd_I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
